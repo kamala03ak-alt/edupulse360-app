@@ -35,30 +35,7 @@ export async function proxy(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const pathname = request.nextUrl.pathname;
-
-  if (pathname.startsWith("/app") && !user) {
-    const loginUrl = request.nextUrl.clone();
-
-    loginUrl.pathname = "/login";
-    loginUrl.search = "";
-    loginUrl.searchParams.set("next", pathname);
-
-    return NextResponse.redirect(loginUrl);
-  }
-
-  if (pathname === "/login" && user) {
-    const appUrl = request.nextUrl.clone();
-
-    appUrl.pathname = "/app";
-    appUrl.search = "";
-
-    return NextResponse.redirect(appUrl);
-  }
+  await supabase.auth.getUser();
 
   return response;
 }
